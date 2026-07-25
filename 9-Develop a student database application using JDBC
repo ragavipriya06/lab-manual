@@ -1,0 +1,106 @@
+import java.sql.*;
+import java.util.Scanner;
+
+public class StudentDatabaseCRUD {
+
+    static final String URL = "jdbc:mysql://localhost:3306/studentdb";
+    static final String USER = "root";
+    static final String PASSWORD = "root";   // Change if your MySQL password is different
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+
+            while (true) {
+                System.out.println("\n---- STUDENT DATABASE ----");
+                System.out.println("1. Insert");
+                System.out.println("2. Display");
+                System.out.println("3. Update");
+                System.out.println("4. Delete");
+                System.out.println("5. Exit");
+                System.out.print("Enter Choice: ");
+                int ch = sc.nextInt();
+
+                switch (ch) {
+
+                    case 1:
+                        System.out.print("Enter ID: ");
+                        int id = sc.nextInt();
+                        sc.nextLine();
+
+                        System.out.print("Enter Name: ");
+                        String name = sc.nextLine();
+
+                        System.out.print("Enter Department: ");
+                        String dept = sc.nextLine();
+
+                        PreparedStatement ps = con.prepareStatement(
+                                "INSERT INTO student VALUES(?,?,?)");
+                        ps.setInt(1, id);
+                        ps.setString(2, name);
+                        ps.setString(3, dept);
+
+                        ps.executeUpdate();
+                        System.out.println("Record Inserted Successfully");
+                        break;
+
+                    case 2:
+                        Statement st = con.createStatement();
+                        ResultSet rs = st.executeQuery("SELECT * FROM student");
+
+                        System.out.println("\nID\tNAME\tDEPARTMENT");
+                        while (rs.next()) {
+                            System.out.println(rs.getInt(1) + "\t"
+                                    + rs.getString(2) + "\t"
+                                    + rs.getString(3));
+                        }
+                        break;
+
+                    case 3:
+                        System.out.print("Enter ID to Update: ");
+                        int uid = sc.nextInt();
+                        sc.nextLine();
+
+                        System.out.print("Enter New Department: ");
+                        String newDept = sc.nextLine();
+
+                        PreparedStatement ps2 = con.prepareStatement(
+                                "UPDATE student SET dept=? WHERE id=?");
+                        ps2.setString(1, newDept);
+                        ps2.setInt(2, uid);
+
+                        ps2.executeUpdate();
+                        System.out.println("Record Updated Successfully");
+                        break;
+
+                    case 4:
+                        System.out.print("Enter ID to Delete: ");
+                        int did = sc.nextInt();
+
+                        PreparedStatement ps3 = con.prepareStatement(
+                                "DELETE FROM student WHERE id=?");
+                        ps3.setInt(1, did);
+
+                        ps3.executeUpdate();
+                        System.out.println("Record Deleted Successfully");
+                        break;
+
+                    case 5:
+                        con.close();
+                        sc.close();
+                        System.exit(0);
+
+                    default:
+                        System.out.println("Invalid Choice");
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
