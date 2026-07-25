@@ -1,0 +1,56 @@
+import java.io.*;
+import java.util.Scanner;
+
+public class StudentFileManagement {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        try {
+            // Create file
+            FileWriter fw = new FileWriter("student.txt");
+
+            // Get student details
+            System.out.print("Enter Student ID: ");
+            int id = sc.nextInt();
+            sc.nextLine();
+
+            System.out.print("Enter Student Name: ");
+            String name = sc.nextLine();
+
+            System.out.print("Enter Department: ");
+            String dept = sc.nextLine();
+
+            System.out.print("Enter Mark: ");
+            int mark = sc.nextInt();
+
+            // Write to file
+            fw.write("Student ID : " + id + "\n");
+            fw.write("Student Name : " + name + "\n");
+            fw.write("Department : " + dept + "\n");
+            fw.write("Mark : " + mark + "\n");
+
+            fw.close();
+
+            System.out.println("\nStudent details stored successfully.\n");
+
+            // Read from file
+            FileReader fr = new FileReader("student.txt");
+            BufferedReader br = new BufferedReader(fr);
+
+            String line;
+            System.out.println("----- Student Record -----");
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            br.close();
+            fr.close();
+
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        sc.close();
+    }
+}
